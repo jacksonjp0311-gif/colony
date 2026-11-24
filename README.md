@@ -8,6 +8,8 @@
 
 **A swarm that prices a question before it answers it.**
 
+*Forked and turned into an evolving runner by [James Paul Jackson](https://github.com/jacksonjp0311-gif). Original claim hygiene, cluster map, and independent verifier stay. Agents can now propose safe mutations to allocation and judgment knobs under twin control + Oracle gates. See [CHARTER.md](CHARTER.md) and `python -m colony.evolve`.*
+
 [![tests](https://img.shields.io/badge/tests-54_passing-3fb950?style=flat-square)](tests/)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-8b949e?style=flat-square)](LICENSE)
@@ -26,6 +28,19 @@ footnoted or absent.
 The default is one ask per claim. Extra scouts are bought only where two sources already
 disagree, or where a load-bearing claim came back dead. On a live run that was
 **11 asks, 9 paid, $0.09**.
+
+---
+
+## Evolving runner (this fork)
+
+Scheduled cycles (`.github/workflows/colony-evolve.yml`) run hard benches, then N evolve cycles. Each cycle measures the current knobs on a seed set, proposes one closed-set mutation, re-measures, and keeps only if the trial is strictly better *and* the twin control does not lead. The independent verifier is outside the mutation set. Human authorize remains required for durable accepts or new claims.
+
+```bash
+python -m colony.evolve --cycles 3
+python -m colony.evolve --status
+```
+
+See [CHARTER.md](CHARTER.md), [society/LEARNING.md](society/LEARNING.md), and the original Athar surfaces below.
 
 ---
 
@@ -94,7 +109,7 @@ the memo says so instead of implying corroboration.
 ## Quickstart
 
 ```bash
-git clone https://github.com/atharhive/colony && cd colony
+git clone https://github.com/jacksonjp0311-gif/colony && cd colony
 python3 -m venv .venv
 ./.venv/bin/pip install -r requirements.txt
 ./.venv/bin/python -m pytest tests -q          # 54 tests, offline, no wallet
@@ -172,9 +187,12 @@ colony/ledger.py     append-only purchases
 colony/policy.py     budget and caps
 colony/cli.py        ask, watch, ledger, claims
 colony/api.py        POST /ask
+colony/evolve.py     cyclic runner (this fork)
+colony/knobs.py      closed set of safe mutable parameters
 scripts/             fund_testnet, verify_bundle, tamper, verify_evidence
 evidence/            real runs, probes, receipts
 truth/               evaluation material contributed to the pool
+society/             LEARNING.md and evolve surfaces
 ```
 
 ## Documentation
@@ -186,6 +204,7 @@ truth/               evaluation material contributed to the pool
 - [Usage](docs/USAGE.md) - one decision end to end
 - [Troubleshooting](docs/TROUBLESHOOTING.md) - every failure these runs hit
 - [Evidence index](docs/EVIDENCE.md) - five minutes for a reviewer
+- [CHARTER](CHARTER.md) - hard ceiling for the evolving runner
 
 ## Status
 
@@ -193,10 +212,12 @@ Testnet only. 93 commits, 54 tests, 11 paid asks in the committed run, one missi
 (Mission 03, Institutional Markets) with macro and FX bought as supporting claims. No
 miner shipped yet.
 
+This fork adds the evolve runner skeleton. Real measurement against seed counterparties and a full Oracle still to be wired.
+
 MIT. See [LICENSE](LICENSE).
 
 <div align="center">
 
-Built with ❤️ by [Athar](https://github.com/atharhive)
+Original by [Athar](https://github.com/atharhive) · Evolving runner by [James](https://github.com/jacksonjp0311-gif)
 
 </div>
